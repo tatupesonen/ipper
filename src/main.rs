@@ -10,7 +10,8 @@ struct IpResponse {
 
 fn client_ip(headers: &HeaderMap, addr: SocketAddr) -> IpAddr {
     let ip = headers
-        .get("x-real-ip")
+        .get("cf-connecting-ip")
+        .or_else(|| headers.get("x-real-ip"))
         .or_else(|| headers.get("x-forwarded-for"))
         .and_then(|v| v.to_str().ok())
         .and_then(|s| s.split(',').next())
